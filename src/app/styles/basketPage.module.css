@@ -1,0 +1,72 @@
+.custom{
+&::-webkit-scrollbar{
+    display: none;
+}
+-ms-overflow-style: none;
+
+}
+
+.swiper{
+    background-position: center;
+    background-size: cover;
+    width: 300px;
+    height: 300px;
+    @media (max-width:768px) {
+        width: 250px;
+        height: auto;
+
+    }
+}
+.swiper img{
+    display: block;
+    object-fit: cover;
+    width: 100%;
+
+}
+@keyframes expandWidth {
+    from {
+      width: 240px; /* عرض اولیه */
+    }
+    to {
+      width: 100%; /* عرض نهایی */
+    }
+  }
+  
+  @keyframes moveTextLeft {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-20%);
+    }
+  }
+  
+  .expandAnimation {
+    animation: expandWidth 0.5s ease-in-out forwards;
+  }
+  
+  .textMoveLeft {
+    animation: moveTextLeft 0.5s ease-in-out forwards;
+  }
+  .initialState {
+    transform: translateX(100%); /* دیو خارج از صفحه باشد */
+    opacity: 0; /* کاملاً شفاف */
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* انیمیشن ورود دیو نارنجی */
+  .enterAnimation {
+    animation: slideIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  
+  @keyframes slideIn {
+    0% {
+      transform: translateX(0); 
+      width: 100%; 
+      border-top-left-radius: 0%;
+    }
+  
+    100% {
+      width: 240px; /* عرض نهایی */
+    }
+  }
