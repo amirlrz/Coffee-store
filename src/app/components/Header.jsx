@@ -5,6 +5,8 @@ import CardPage from './card-acount/page'
 import Image from 'next/image'
 
 function Header() {
+
+  
   return (
     <div className='flex gap-3 m-5 items-center'>
       <div className="image  flex text-lightorange text-[24px] items-center ">

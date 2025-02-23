@@ -1,12 +1,13 @@
-import React from 'react'
 
-function aboutUsPage() {
-  
+import React from "react";
+
+ function AboutUsPage() {
+
   return (
     <div>
-      this is about us page
+
     </div>
-  )
+  );
 }
 
-export default aboutUsPage
+export default AboutUsPage;

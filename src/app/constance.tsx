@@ -4,16 +4,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React, {  createContext, useState } from 'react'
 const queryClient = new QueryClient()
-const StoreContext = createContext();
+const StoreContext = createContext(null);
 
- function StoreProvider({ children }: { children: React.ReactNode }) {
+ function StoreProvider({ children }) {
   const [userInfo,setUserInfo] = useState()
   const [isLogIn,setIsLogIn] = useState(false)
   const [showSignUp,setShowSignUp] =useState(false)
-  const [size,setSize]=useState()
+  const [selectsize,setselectsize]=useState()
   const[showSingleProduct,setshowSingleProduct]=useState(false)
   const[showBasket,setShowBasket]=useState(false)
   const [showLgPop,setShowLgPop] = useState(false)
+  const [showWishList,setShowWishList] =useState(false)
   return (
     <div>
       <QueryClientProvider client={queryClient}>
@@ -25,15 +26,16 @@ const StoreContext = createContext();
         setshowSingleProduct,
         showBasket,
         setShowBasket,
-        size,
-        setSize,
+        selectsize,
+        setselectsize,
         showSignUp,
         setShowSignUp,
         isLogIn,
         setIsLogIn,
         userInfo,
-        setUserInfo
-
+        setUserInfo,
+        showWishList,
+        setShowWishList
       }
  }
         >

@@ -1,6 +1,5 @@
 "use client";
 import React, { useContext } from "react";
-import { useSignIn } from "../api/signIn";
 import StoreContext from "../constance";
 import Image from "next/image";
 
@@ -10,9 +9,11 @@ function UserPage() {
     localStorage.clear();
     setIsLogIn(false);
   };
+
+  console.log("TCL: UserPage -> ", userInfo);
   return (
     <>
-      <div className="bg-[rgba(111,63,48,0.5)] z-10 shadow-black shadow-lg backdrop-blur-xl fixed top-[92px] w-64 rounded-tl-xl rounded-bl-xl right-[73px] h-64">
+      <div className="bg-[rgba(111,63,48,0.5)] z-10 shadow-black p-2 shadow-lg backdrop-blur-xl fixed top-[92px] w-64 rounded-tl-xl rounded-bl-xl right-[73px] h-64">
         <div className="flex flex-col items-center mt-3 ">
           <Image
             width={100}
@@ -22,8 +23,8 @@ function UserPage() {
           />
           <p className="text-xs text-stone-400 mb-5">" User Information "</p>
           <div className="text-stone-200 ">
-            <p>your name: {userInfo.user_nicename}</p>
-            <p>your email: {userInfo.user_email}</p>
+            <p>your role: {userInfo?.user?.role}</p>
+            <p>your email: {userInfo?.user?.email}</p>
           </div>
           <button
             onClick={removeToken}

@@ -1,8 +1,5 @@
 import React, { useRef } from "react";
 
-// Define the props interface
-
-
 const HorizontallyScroll = ({ children, className }) => {
   const scrollRef = useRef();
 

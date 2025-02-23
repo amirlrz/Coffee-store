@@ -6,15 +6,23 @@ import { useForm } from "react-hook-form";
 import animationData from "../assets/successfully-done.json";
 import styles from "../styles/basketPage.module.css";
 import Lottie from "lottie-react";
+
 function SignUpPage() {
   const [exAnimation, setExAnimation] = useState(false);
-  const {setShowSignUp, setUserInfo } =
-    useContext(StoreContext);
+  const { setShowSignUp, setUserInfo, setIsLogIn } = useContext(StoreContext);
   const [showAnimation, setShowAnimation] = useState(true);
   const { setShowLgPop } = useContext(StoreContext);
   const { handleSubmit, register, formState } = useForm();
   const { isValid } = formState;
-  const { mutate, isPending, isSuccess } = useAddNewUser();
+
+  const {
+    mutate,
+    isPending,
+    isSuccess,
+    data: newUserData,
+    error,
+    isError,
+  } = useAddNewUser();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -23,10 +31,20 @@ function SignUpPage() {
   const handleAnimation = () => {
     setShowAnimation(false);
     setShowLgPop(false);
+    setUserInfo(newUserData);
+    setIsLogIn(true);
   };
-  const onSubmit = async (data) => {
-    mutate(data);
-    setUserInfo(data);
+  const onSubmit = (formData) => {
+    const { email, password } = formData;
+    mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          setShowAnimation(true);
+          setShowAlert(true);
+        },
+      }
+    );
   };
 
   const SignInFn = () => {
@@ -67,40 +85,23 @@ function SignUpPage() {
             }
           >
             <div>
-              <p className="text-white mt-24 text-3xl  ">welcome back!</p>
+              <p className="text-white mt-24 text-3xl  ">welcome !</p>
               <p className="text-xs mt-2 text-white">
                 {" "}
-                You dont have an acount?
+                You have an acount?
               </p>
               <button
                 onClick={SignInFn}
-                className=" border p-1 w-28 mt-6 rounded-lg text-white border-white text-sm "
+                className=" border p-1 w-28 mt-6 rounded-lg text-white border-white text-sm hover:bg-white hover:text-lightorange"
               >
                 Login
               </button>
             </div>
           </div>
 
-          <p className="mb-10  mt-6 ml-[160px] text-2xl text-lightorange">Sign Up</p>
-
-          {/* Username Input */}
-
-          <div className="input-group relative ml-28  ">
-            <input
-              id="username"
-              className="input peer w-48 p-2 text-xs  focus:p-3  border border-gray-300 rounded-lg focus:outline-none focus:border-lightorange transition-all duration-150"
-              type="text"
-              {...register("username", { required: true })}
-              placeholder="username "
-            />
-            <i className="bi bi-person-fill absolute right-2 text-lightorange opacity-90 peer-focus:top-2 top-1"></i>
-            <label
-              htmlFor="username"
-              className="label absolute left-3 top-6 opacity-0 peer-focus:opacity-100 peer-focus:top-3 text-gray-500  pointer-events-none transition-all duration-150  pee-focus:scale-75  peer-focus:px-2 peer-valid:-translate-y-6 peer-valid:scale-75 peer-focus:text-stone-700 peer-valid:white peer-focus:bg-lightorange peer-focus:rounded-2xl "
-            >
-              Username
-            </label>
-          </div>
+          <p className="mb-10  mt-6 ml-[160px] text-2xl text-lightorange">
+            Sign Up
+          </p>
 
           {/* Email Input */}
           <div className="input-group relative ml-28 ">
@@ -148,8 +149,9 @@ function SignUpPage() {
                 : "bi bi-x-circle-fill text-white bg-lightorange  mt-4 ml-28 text-sm w-48 rounded-xl opacity-40 mb-5 p-2 " // استایل برای حالت invalid
             }
           >
-            {isPending ? "" : isValid ? " Submit" : " Submit"}
+            {isPending ? "" : isValid ? " Submit" : "Submit"}
           </button>
+          {isError && <p className="text-xs text-red-800">{error.message}</p>}
         </form>
       )}
     </>
