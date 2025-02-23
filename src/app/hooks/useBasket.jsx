@@ -27,11 +27,13 @@ const useBasket = create((set, get) => {
         });
       },
       removeFromWhishList: (payload) => {
-        set((oldState) => ({
-          wishlist: oldState.wishlist.filter((item) => {
-            item.id !== payload.id;
-          }),
-        }));
+        set((oldState) => {
+          return {
+            wishlist: oldState.wishlist.filter(
+              (_item) => _item.id !== payload.id
+            ),
+          };
+        });
       },
 
       showProduct: (payload) => {

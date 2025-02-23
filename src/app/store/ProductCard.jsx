@@ -31,12 +31,12 @@ function ProductCard({ alldata }) {
       <div className=" text-black relative  cursor-pointer  ">
         <i
           onClick={() => wishList(alldata)}
-          className={`text-xs absolute bg-white h-7 p-2 rounded-full 
+          className={`text-xs absolute  h-7 p-2 rounded-full 
           text-gray-400  right-1 top-1 z-10
           transition-all ${
             removeFromWishList
-              ? "bi bi-trash-fill bg-red-500 text-white hover:text-white hover:text-sm   "
-              : "bi bi-suit-heart hover:text-rose-700 hover:text-sm "
+              ? "bi bi-trash-fill bg-red-500 text-white   hover:text-sm   "
+              : "bi bi-suit-heart bg-white hover:text-rose-700 hover:text-sm "
           }`}
         ></i>
         <div onClick={showProduct} className=" hover:brightness-50 ">
