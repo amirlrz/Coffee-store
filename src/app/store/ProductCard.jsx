@@ -8,9 +8,8 @@ import Image from "next/image";
 function ProductCard({ alldata }) {
   const { name, image_url, price, description } = alldata;
   const { setshowSingleProduct, setShowWishList } = useContext(StoreContext);
-  const { actions, wishlist } = useBasket();
+  const { actions } = useBasket();
   const [removeFromWishList, setRemoveFromWishList] = useState(false);
-  console.log("TCL: ProductCard -> wishlist", wishlist);
   const apiResponse = description;
   const strippedText = apiResponse.replace(/<[^>]*>/g, "");
   const showProduct = () => {

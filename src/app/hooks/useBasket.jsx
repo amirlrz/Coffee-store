@@ -117,28 +117,6 @@ const useBasket = create((set, get) => {
         });
       },
 
-      //   updateSize: (productId, size) =>
-
-      //   set((state) => ({
-      //       selectedSizes: {
-      //         ...state.selectedSizes,
-      //         [productId]: size,
-      //       },
-      //       items: state.items.map((product) =>
-      //       product.id === productId
-      //           ? {
-      //               ...product,
-      //               attributes: {
-      //                 ...product.attributes,
-      //                 size: {
-      //                   ...product.attributes.size,
-      //                   options: [size], // فقط سایز انتخاب شده باقی می‌ماند
-      //                 },
-      //               },
-      //             }
-      //           : product
-      //       ),
-      //     })),
       removeFromBasket: (payload) => {
         const shouldRemove = payload.quantity === 1;
         if (shouldRemove) {

@@ -7,7 +7,7 @@ import useBasket from "../hooks/useBasket";
 import Image from "next/image";
 function WishPage() {
   const { items, wishlist } = useBasket();
-  console.log("TCL: WishPage -> wishlist", wishlist);
+ 
   const calcItem = () => {
     return items.reduce((acc, curr) => acc + curr.quantity, 0);
   };
@@ -20,7 +20,7 @@ function WishPage() {
        {(calcItem() >= 1 || (wishlist.length >= 1 && showWishList)) ? (
         
         createPortal(
-          <div className="bg-lightorange w-screen fixed bottom-0 h-10">
+          <div className="bg-lightorange w-screen fixed bottom-0 h-10 ">
             <div className="flex ml-10 gap-4 mt-2">
               <Image
                 width={20}
