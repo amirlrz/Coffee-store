@@ -2,8 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "./constance";
 import Header from "./components/Header";
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import NoticePage from "./NoticePage";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import WishPage from "./store/WishPage";
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,11 +25,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <StoreProvider>       
-        <NoticePage/>
-         <Header/>
-        {children}
-        <WishPage />
+        <StoreProvider>
+          <Header />
+          {children}
+          <WishPage />
         </StoreProvider>
       </body>
     </html>

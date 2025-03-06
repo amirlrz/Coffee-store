@@ -10,7 +10,6 @@ function UserPage() {
     setIsLogIn(false);
   };
 
-  console.log("TCL: UserPage -> ", userInfo);
   return (
     <>
       <div className="bg-[rgba(111,63,48,0.5)] z-10 shadow-black p-2 shadow-lg backdrop-blur-xl fixed top-[92px] w-64 rounded-tl-xl rounded-bl-xl right-[73px] h-64">

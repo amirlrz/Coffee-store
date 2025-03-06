@@ -8,9 +8,8 @@ import Image from "next/image";
 function ProductCard({ alldata }) {
   const { name, image_url, price, description } = alldata;
   const { setshowSingleProduct, setShowWishList } = useContext(StoreContext);
-  const { actions, wishlist } = useBasket();
+  const { actions } = useBasket();
   const [removeFromWishList, setRemoveFromWishList] = useState(false);
-  console.log("TCL: ProductCard -> wishlist", wishlist);
   const apiResponse = description;
   const strippedText = apiResponse.replace(/<[^>]*>/g, "");
   const showProduct = () => {
@@ -27,16 +26,16 @@ function ProductCard({ alldata }) {
     }
   };
   return (
-    <div className="m-2 gap-3 mt-3 w-[300px] flex-shrink-0 relative  text-center  p-3 rounded-lg">
+    <div className="m-2 gap-3 mt-3 max-sm:w-[300px]  w-[300px] bg-zinc-950 flex-shrink-0 relative  text-center  p-3 rounded-lg  ">
       <div className=" text-black relative  cursor-pointer  ">
         <i
           onClick={() => wishList(alldata)}
-          className={`text-xs absolute  h-7 p-2 rounded-full 
-          text-gray-400  right-1 top-1 z-10
+          className={`text-xs absolute  h-5 p-1 rounded-full 
+          text-specialRed  right-[0px] top-[0px] z-10
           transition-all ${
             removeFromWishList
-              ? "bi bi-trash-fill bg-red-500 text-white   hover:text-sm   "
-              : "bi bi-suit-heart bg-white hover:text-rose-700 hover:text-sm "
+              ? "bi bi-trash-fill bg-specialRed text-white    "
+              : "bi bi-suit-heart bg-white  hover:text-sm "
           }`}
         ></i>
         <div onClick={showProduct} className=" hover:brightness-50 ">
@@ -48,18 +47,18 @@ function ProductCard({ alldata }) {
         </div>
       </div>
       <div className="grid grid-cols-3 mt-3 ">
-        <h3 className="text-sm col-end-3 col-start-1 ">{name}</h3>
+        <h3 className="text-[13px] col-end-3 col-start-1 ">{name}</h3>
         <p className="col-start-3">{price} $</p>
-        <p className="text-xs text-gray-700 col-start-1 col-end-3">
+        <p className="text-xs text-gray-400 col-start-1 col-end-3">
           {strippedText}
         </p>
       </div>
       {/* </Link> */}
       <div className="stars flex gap-2 mt-2">
-        <i className="bi bi-star-fill text-lightorange"></i>
-        <i className="bi bi-star-fill text-lightorange"></i>
-        <i className="bi bi-star-fill text-lightorange"></i>
-        <i className="bi bi-star text-lightorange"></i>
+        <i className="bi bi-star-fill "></i>
+        <i className="bi bi-star-fill "></i>
+        <i className="bi bi-star-fill "></i>
+        <i className="bi bi-star "></i>
       </div>
     </div>
   );

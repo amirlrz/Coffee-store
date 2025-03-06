@@ -15,6 +15,9 @@ const StoreContext = createContext(null);
   const[showBasket,setShowBasket]=useState(false)
   const [showLgPop,setShowLgPop] = useState(false)
   const [showWishList,setShowWishList] =useState(false)
+  const [showMenu,setShowMenu] =useState(false)
+ 
+
   return (
     <div>
       <QueryClientProvider client={queryClient}>
@@ -35,7 +38,9 @@ const StoreContext = createContext(null);
         userInfo,
         setUserInfo,
         showWishList,
-        setShowWishList
+        setShowWishList,
+        showMenu,
+        setShowMenu
       }
  }
         >
