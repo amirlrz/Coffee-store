@@ -6,7 +6,7 @@ import HorizontallyScroll from "../components/HorizontallyScroll";
 function MainPageProduct({ LandPgData }) {
   return (
     <>
-      <div className=" m-2 gap-3 mt-3 flex-shrink-0  text-center  p-3 rounded-lg">
+      <div className=" m-2 gap-3 mt-3 flex-shrink-0  text-center  p-3 rounded-lg  ">
         <HorizontallyScroll className="lastItems flex  overflow-hidden   ">
           {LandPgData &&
             LandPgData.map((data) => (
