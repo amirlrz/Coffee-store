@@ -4,6 +4,7 @@ import { StoreProvider } from "./constance";
 import Header from "./components/Header";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import WishPage from "./store/WishPage";
+import Footer from "./components/Footer";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
           <Header />
           {children}
           <WishPage />
+          <Footer />
         </StoreProvider>
       </body>
     </html>

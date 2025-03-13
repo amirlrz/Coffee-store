@@ -8,6 +8,7 @@ import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger);
 
 function Features() {
+  
   useGSAP(() => {
     gsap.to("#features_title", {
       y: 0,
