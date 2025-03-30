@@ -7,23 +7,29 @@ import Image from "next/image";
 
 function ProductCard({ alldata }) {
   const { name, image_url, price, description } = alldata;
-  const { setShowSingleProduct, setShowWishList } = useContext(StoreContext);
-  const { actions } = useBasket();
-  const [removeFromWishList, setRemoveFromWishList] = useState(false);
+  const { setShowSingleProduct, setShowWishList, setShowWlist } =
+    useContext(StoreContext);
+  const { actions, wishlist } = useBasket();
+
   const apiResponse = description;
   const strippedText = apiResponse.replace(/<[^>]*>/g, "");
+  const isInWishlist = wishlist.some((item) => item.id === alldata.id);
+  const [wishlistItems, setWishlistItems] = useState([]);
   const showProduct = () => {
     actions.showProduct(alldata);
     setShowSingleProduct(true);
   };
 
-  const wishList = () => {
-    actions.addToWishList(alldata);
-    setShowWishList(true);
-    setRemoveFromWishList(!removeFromWishList);
-    if (removeFromWishList) {
-      actions.removeFromWhishList(alldata);
+  const wishList = (product) => {
+    if (wishlistItems.includes(product.id)) {
+      actions.removeFromWhishList(product);
+      setWishlistItems(wishlistItems.filter((id) => id !== product.id));
+    } else {
+      actions.addToWishList(product);
+      setWishlistItems([...wishlistItems, product.id]);
     }
+    setShowWishList(true);
+    setShowWlist(false);
   };
   return (
     <div className="m-2 gap-3 mt-3 max-sm:w-[300px]  w-[300px] bg-zinc-950 flex-shrink-0 relative  text-center  p-3 rounded-lg  ">
@@ -33,7 +39,7 @@ function ProductCard({ alldata }) {
           className={`text-xs absolute  h-5 p-1 rounded-full 
           text-specialRed  right-[0px] top-[0px] z-10
           transition-all ${
-            removeFromWishList
+            isInWishlist
               ? "bi bi-trash-fill bg-specialRed text-white    "
               : "bi bi-suit-heart bg-white  hover:text-sm "
           }`}
