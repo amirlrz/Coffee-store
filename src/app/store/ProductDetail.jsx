@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import useBasket from "../hooks/useBasket";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";
@@ -15,14 +15,20 @@ function ProductDetail({ productData }) {
   const { image_url, name, price, description, quantity, size } = productData;
   const cleanedString = size.replace(/[{}]/g, "");
   const sizeArray = cleanedString.split(",");
+  const [showWeightWarning, setShowWeightWarning] = useState(false);
 
   const { actions } = useBasket();
   const { selectsize, setselectsize, setShowWishList } =
     useContext(StoreContext);
   const { setShowSingleProduct, showSingleProduct } = useContext(StoreContext);
   const importToBasket = () => {
-    setShowSingleProduct(false);
-    setShowWishList(true);
+    if (selectsize) {
+      setShowSingleProduct(false);
+      setShowWishList(true);
+      setShowWeightWarning(false);
+    } else {
+      setShowWeightWarning(true);
+    }
   };
   const closingPDetail = () => {
     actions.removeFromBasket(productData);
@@ -183,6 +189,17 @@ function ProductDetail({ productData }) {
             Cancle
           </button>
         </div>
+        {showWeightWarning && (
+          <div className=" absolute top-[400px] right-32 p-8 bg-gradient-to-br from-red-600 to-stone-950 rounded-xl shadow-2xl  animate-macbookOpen ">
+            <p className="text-red-200 text-lg"> select a Weight </p>
+            <button
+              onClick={() => setShowWeightWarning(false)}
+              className="bg-zinc-900  h-7 hover:bg-zinc-800 text-red-700  px-6 mt-7 rounded-2xl"
+            >
+              OK
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

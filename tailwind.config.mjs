@@ -32,6 +32,10 @@ export default {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0)" },
         },
+        slideInUp: {
+          "0%": { transform: "translateY(100%)" },
+          "100%": { transform: "translateYS(0)" },
+        },
         slideOutRight: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(100%)" },
@@ -41,6 +45,7 @@ export default {
         macbookOpen: "macbookOpen 0.9s ease forwards",
         productOpen: "macbookOpen 0.6s ease forwards",
         "slide-in-right": "slideInRight 0.4s ease-in-out",
+        "slide-in-up": "slideInUp 0.4s ease-in-out",
         "slide-out-right": "slideOutRight 0.3s ease-in-out",
       },
     },

@@ -12,7 +12,8 @@ async function StorePage() {
         {productsData &&
           productsData.map((data) => (
             <ProductCard alldata={data} key={data.id} />
-          ))}
+          )
+          )}
         <ShowProductDt />
 
         
