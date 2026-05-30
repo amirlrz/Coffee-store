@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useContext } from "react";
 import useBasket from "../hooks/useBasket";
@@ -7,6 +7,8 @@ import ProductDetail from "./ProductDetail";
 import { createPortal } from "react-dom";
 function ShowProductDt() {
   const { items } = useBasket();
+  console.log(items);
+
   const { showSingleProduct } = useContext(StoreContext);
   return (
     <>

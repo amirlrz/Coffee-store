@@ -14,9 +14,6 @@ async function StorePage() {
             <ProductCard alldata={data} key={data.id} />
           ))}
         <ShowProductDt />
-
-        
-     
       </div>
     </>
   );

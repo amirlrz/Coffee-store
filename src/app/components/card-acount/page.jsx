@@ -10,7 +10,9 @@ import dynamic from "next/dynamic";
 
 const Menu = dynamic(() => import("../Menu"), { ssr: false });
 const UserPage = dynamic(() => import("../../AcountPage/page"), { ssr: false });
-const LoginPage = dynamic(() => import("../../login/page"), { ssr: false });
+const LoginPage = dynamic(() => import("../../LoginPage/login/page"), {
+  ssr: false,
+});
 
 function CardPage() {
   const {

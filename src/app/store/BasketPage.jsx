@@ -5,11 +5,9 @@ import { useContext } from "react";
 import StoreContext from "../constance";
 import Image from "next/image";
 function BasketPage({ basketdata }) {
-  const { image_url, name, description, price, quantity } = basketdata;
+  const { name, description, price, quantity } = basketdata;
   const { actions } = useBasket();
   const { selectsize } = useContext(StoreContext);
-  const apiResponse = description;
-  const strippedText = apiResponse.replace(/<[^>]*>/g, "");
 
   return (
     <>
@@ -20,7 +18,7 @@ function BasketPage({ basketdata }) {
               className="max-sm:h-[90px] "
               width={96}
               height={96}
-              src={image_url}
+              src="/images/coffee2.png"
               alt={name}
             />
 
@@ -41,7 +39,7 @@ function BasketPage({ basketdata }) {
                   {name}
                 </p>
                 <p className="text-[10px] max-sm:hidden mr-9 text-gray-400 ">
-                  {strippedText}
+                  {description}
                 </p>
               </div>
               <div className="stars  flex   gap-2 max-sm:ml-2 mt-3 text-[9px] text-specialRed  ">

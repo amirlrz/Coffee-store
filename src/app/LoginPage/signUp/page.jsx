@@ -1,10 +1,10 @@
 "use client";
-import { useAddNewUser } from "../api/userApi";
-import StoreContext from "../constance";
+import { useAddNewUser } from "../../hooks/signup";
+import StoreContext from "../../constance";
 import React, { useEffect, useState, useContext } from "react";
 import { useForm } from "react-hook-form";
-import animationData from "../assets/successfully-done.json";
-import styles from "../styles/basketPage.module.css";
+import animationData from "../../assets/successfully-done.json";
+import styles from "../../styles/basketPage.module.css";
 import dynamic from "next/dynamic";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -14,6 +14,7 @@ function SignUpPage() {
   const { setShowSignUp, setUserInfo, setIsLogIn, setShowLgPop } =
     useContext(StoreContext);
   const [showAnimation, setShowAnimation] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const { handleSubmit, register, formState } = useForm({ mode: "onChange" });
   const { isValid } = formState;
   const {
@@ -24,11 +25,8 @@ function SignUpPage() {
     error,
     isError,
   } = useAddNewUser();
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => {}, []);
 
   const handleAnimation = () => {
     setShowAnimation(false);
@@ -39,12 +37,7 @@ function SignUpPage() {
 
   const onSubmit = (formData) => {
     const { email, password } = formData;
-    mutate(
-      { email, password },
-      {
-        onSuccess: () => setShowAnimation(true),
-      }
-    );
+    mutate({ email, password }, { onSuccess: () => setShowAnimation(true) });
   };
 
   const SignInFn = () => {
@@ -55,8 +48,20 @@ function SignUpPage() {
     }, 500);
   };
 
+  // close modal
+  const closeModal = () => {
+    setShowSignUp(false);
+    setShowLgPop(false);
+  };
+
   return (
     <>
+      {/* dark overlay — clicking it also closes */}
+      <div
+        onClick={closeModal}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-10"
+      />
+
       {isSuccess && showAnimation ? (
         <div className="w-[300px] h-[200px] bg-white fixed top-[100px] right-[500px] z-20 rounded-3xl">
           <p className="flex justify-center top-0 text-lg">Welcome!</p>
@@ -69,17 +74,30 @@ function SignUpPage() {
         </div>
       ) : (
         <form
-          className="bg-white  max-sm:w-[360px]   max-sm:left-4 max-sm:top-[250px]   backdrop-blur-lg w-2/4 z-20 top-40 right-1/4 shadow-2xl items-start ease-in-out p-1 fixed flex flex-col rounded-lg text-center text-black gap-4"
+          className="bg-white max-sm:w-[360px] max-sm:left-4 max-sm:top-[250px] backdrop-blur-lg w-2/4 z-20 top-40 right-1/4 shadow-2xl items-start ease-in-out p-1 fixed flex flex-col rounded-lg text-center text-black gap-4"
           onSubmit={handleSubmit(onSubmit)}
         >
+          {/* close button */}
+          <button
+            type="button"
+            onClick={closeModal}
+            className="absolute top-3 left-3 z-30 w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 hover:text-specialRed text-gray-400 transition-all duration-200"
+          >
+            <i className="bi bi-x text-lg" />
+          </button>
+
           <div
             className={`absolute bg-specialRed max-sm:h-full opacity-80 right-0 top-0 rounded-r-lg rounded-l-[80px] h-full w-60 ${
               exAnimation ? styles.expandAnimation : styles.enterAnimation
             }`}
           >
             <div>
-              <p className="text-white max-sm:ml-[90px] mt-24 text-3xl">Welcome</p>
-              <p className="text-xs mt-2 max-sm:ml-[90px] text-white">You have an account?</p>
+              <p className="text-white max-sm:ml-[90px] mt-24 text-3xl">
+                Welcome
+              </p>
+              <p className="text-xs mt-2 max-sm:ml-[90px] text-white">
+                You have an account?
+              </p>
               <button
                 onClick={SignInFn}
                 className="border p-1 max-sm:ml-[90px] w-28 mt-6 rounded-lg text-white border-white text-sm hover:bg-white hover:text-specialRed"
@@ -88,27 +106,30 @@ function SignUpPage() {
               </button>
             </div>
           </div>
-          <p className="mb-10 max-sm:ml-[30px]  mt-6 ml-[160px] text-2xl text-specialRed">
+
+          <p className="mb-10 max-sm:ml-[30px] mt-6 ml-[160px] text-2xl text-specialRed">
             Sign Up
           </p>
-          <div className="inputs  flex flex-col gap-3 max-sm:-ml-[72px]">
+
+          <div className="inputs flex flex-col gap-3 max-sm:-ml-[72px]">
             <div className="input-group max-sm:w-[140px] max-sm:mr-3 relative ml-28">
               <input
                 id="email"
-                className="input peer  max-sm:w-[140px] w-48 text-xs p-2 focus:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-specialRed transition-all duration-150"
+                className="input peer max-sm:w-[140px] w-48 text-xs p-2 focus:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-specialRed transition-all duration-150"
                 type="text"
                 {...register("email", { required: true })}
                 placeholder="email"
               />
-              <i className="bi bi-envelope-at-fill absolute right-2 text-specialRed opacity-90 peer-focus:top-2 top-1"></i>
+              <i className="bi bi-envelope-at-fill absolute right-2 text-specialRed opacity-90 peer-focus:top-2 top-1" />
               <label
                 htmlFor="email"
-                className="label  absolute left-3 top-6 opacity-0 peer-focus:opacity-100 peer-focus:top-3 text-gray-500 pointer-events-none transition-all duration-150 peer-focus:scale-75 peer-focus:px-2 peer-valid:-translate-y-6 peer-valid:scale-75 peer-focus:text-white peer-valid:white peer-focus:bg-specialRed peer-focus:rounded-lg"
+                className="label absolute left-3 top-6 opacity-0 peer-focus:opacity-100 peer-focus:top-3 text-gray-500 pointer-events-none transition-all duration-150 peer-focus:scale-75 peer-focus:px-2 peer-valid:-translate-y-6 peer-valid:scale-75 peer-focus:text-white peer-valid:white peer-focus:bg-specialRed peer-focus:rounded-lg"
               >
                 Email
               </label>
             </div>
-            <div className="input-group max-sm:w-[140px]  max-sm:mr-3 relative ml-28">
+
+            <div className="input-group max-sm:w-[140px] max-sm:mr-3 relative ml-28">
               <input
                 id="password"
                 className="input peer max-sm:w-[140px] text-xs p-2 w-48 focus:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-specialRed transition-all duration-150"
@@ -122,21 +143,34 @@ function SignUpPage() {
               >
                 Password
               </label>
-              <i className="bi bi-lock-fill absolute right-2 text-specialRed opacity-90 peer-focus:top-2 top-1"></i>
+              <i className="bi bi-lock-fill absolute right-7 text-specialRed opacity-90 top-1" />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2 top-1 text-red-400 hover:text-gray-500 transition-colors"
+              >
+                <i
+                  className={`bi ${
+                    showPassword ? "bi-eye-slash" : "bi-eye"
+                  } text-sm`}
+                />
+              </button>
             </div>
+
             <button
               type="submit"
               className={
                 isPending
                   ? "bi bi-arrow-clockwise transition-all animate-spin duration-200 ml-48 text-specialRed text-lg"
                   : isValid
-                  ? "bi bi-check-circle-fill  max-sm:w-[140px] transition-all duration-200 text-green-800 border ml-28 border-specialRed text-sm w-48 rounded-xl opacity-90 mb-5 p-2 bg-specialRed"
-                  : "bi bi-x-circle-fill   max-sm:w-[140px] text-white bg-specialRed mt-4 ml-28 text-sm w-48 rounded-xl opacity-40 mb-5 p-2"
+                  ? "bi bi-check-circle-fill max-sm:w-[140px] transition-all duration-200 text-green-800 border ml-28 border-specialRed text-sm w-48 rounded-xl opacity-90 mb-5 p-2 bg-specialRed"
+                  : "bi bi-x-circle-fill max-sm:w-[140px] text-white bg-specialRed mt-4 ml-28 text-sm w-48 rounded-xl opacity-40 mb-5 p-2"
               }
             >
               {isPending ? "" : isValid ? " Sign Up" : " Submit"}
             </button>
           </div>
+
           {isError && error && (
             <p className="text-xs text-red-800">{error.message}</p>
           )}

@@ -1,14 +1,30 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import StoreContext from "../constance";
 import Image from "next/image";
 
 function UserPage() {
-  const { userInfo, setIsLogIn } = useContext(StoreContext);
+  const { setUserInfo, userInfo, setIsLogIn } = useContext(StoreContext);
   const removeToken = () => {
     localStorage.clear();
     setIsLogIn(false);
   };
+
+  useEffect(() => {
+    const storedSession = localStorage.getItem(
+      "sb-rxpfzzdhrovftmoeatcv-auth-token"
+    );
+
+    if (storedSession) {
+      const session = JSON.parse(storedSession);
+
+      setUserInfo({
+        user: session.user,
+      });
+
+      setIsLogIn(true);
+    }
+  }, []);
 
   return (
     <>

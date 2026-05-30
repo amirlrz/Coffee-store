@@ -1,7 +1,6 @@
-import Link from "next/link";
+
 import React from "react";
 import MainPageProduct from "./components/MainPageProduct";
-import Image from "next/image";
 import ShowProductDt from "./store/ShowProductDt";
 import getProducts from "./api/getProducts";
 import Intro from "./components/Intro";

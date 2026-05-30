@@ -1,23 +1,28 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import StoreContext from "../constance";
 import { createPortal } from "react-dom";
 import useBasket from "../hooks/useBasket";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 function WishPage() {
+  const route = useRouter();
   const { items, wishlist } = useBasket();
   const calcItem = () => {
     return items.reduce((acc, curr) => acc + curr.quantity, 0);
   };
-
+  const OpenWishListPage = () => {
+    route.push("/WishList");
+  };
   const { showWishList } = useContext(StoreContext);
+  //console.log("wishlist", wishlist);
 
   return (
     <>
-      {calcItem() >= 1 || (wishlist.length >= 1 && showWishList)
+      {wishlist.length >= 1 && showWishList
         ? createPortal(
-            <div className="bg-specialRed w-screen fixed bottom-0 h-10 z-20">
+            <div className="bg-specialRed w-screen cursor-pointer fixed bottom-1 h-10 z-20">
               <div className="flex ml-10 gap-4 mt-2">
                 <Image
                   className="max-sm:h-5"
@@ -27,7 +32,10 @@ function WishPage() {
                   alt="BasketQuantity"
                 />
                 <p className="text-white">{calcItem()} Items added to Cart </p>
-                <div className="flex gap-5 ml-5 max-sm:ml-2 max-sm:gap-3">
+                <div
+                  onClick={OpenWishListPage}
+                  className="flex gap-5 ml-5 max-sm:ml-2 max-sm:gap-3 animate-bounce "
+                >
                   <i className="bi bi-suit-heart text-white"></i>
                   <p className="text-white">{wishlist.length} Wish list</p>
                 </div>

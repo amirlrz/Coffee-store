@@ -12,10 +12,8 @@ import styles from "../styles/basketPage.module.css";
 import Image from "next/image";
 
 function ProductDetail({ productData }) {
-  const { image_url, name, price, description, quantity, size } = productData;
-  const cleanedString = size.replace(/[{}]/g, "");
-  const sizeArray = cleanedString.split(",");
-
+  const { name, price, category, quantity } = productData;
+  const sizeArray = ["250 gr", "500 gr", "1 kg"];
   const { actions } = useBasket();
   const { selectsize, setselectsize, setShowWishList } =
     useContext(StoreContext);
@@ -78,7 +76,7 @@ function ProductDetail({ productData }) {
                     width={500}
                     height={300}
                     className=" rounded-lg "
-                    src={image_url}
+                    src="/images/coffee2.png"
                     alt={name}
                   />
                 </SwiperSlide>
@@ -109,7 +107,7 @@ function ProductDetail({ productData }) {
           <h3 className="text-sm col-end-3 col-start-1 text-white">{name}</h3>
           <p className="col-start-3">{price} $</p>
           <p className="text-[10px] text-gray-300 col-start-1 col-end-3">
-            {description}
+            {category}
           </p>
         </div>
 

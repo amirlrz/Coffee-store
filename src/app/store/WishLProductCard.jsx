@@ -9,25 +9,22 @@ function ProductCard({ alldata }) {
   //console.log("alldata", alldata);
 
   const { name, price, category } = alldata;
-  const { setShowSingleProduct, setShowWishList, showSingleProduct } =
-    useContext(StoreContext);
-  const { actions, wishlist } = useBasket();
+  const { setShowSingleProduct, setShowWishList } = useContext(StoreContext);
+  const { actions } = useBasket();
   const [removeFromWishList, setRemoveFromWishList] = useState(false);
   const apiResponse = category;
   const strippedText = apiResponse.replace(/<[^>]*>/g, "");
   const showProduct = () => {
-    if (showSingleProduct) return;
     actions.showProduct(alldata);
     setShowSingleProduct(true);
   };
-  const isInWishList = wishlist.some((item) => item.id === alldata.id);
 
   const wishList = () => {
-    if (isInWishList) {
+    actions.addToWishList(alldata);
+    setShowWishList(true);
+    setRemoveFromWishList(!removeFromWishList);
+    if (removeFromWishList) {
       actions.removeFromWhishList(alldata);
-    } else {
-      actions.addToWishList(alldata);
-      setShowWishList(true);
     }
   };
   return (
@@ -35,13 +32,13 @@ function ProductCard({ alldata }) {
       <div className=" text-black relative  cursor-pointer  ">
         <i
           onClick={() => wishList(alldata)}
-          className={`text-xs absolute h-5 p-1 rounded-full
-            right-[0px] top-[0px] z-10 transition-all
-            ${
-              isInWishList
-                ? "bi bi-trash-fill bg-specialRed text-white"
-                : "bi bi-suit-heart bg-white text-specialRed hover:text-sm"
-            }`}
+          className={`text-xs absolute  h-5 p-1 rounded-full 
+          text-specialRed  right-[0px] top-[0px] z-10
+          transition-all ${
+            removeFromWishList
+              ? "bi bi-trash-fill bg-specialRed text-white    "
+              : "bi bi-suit-heart bg-white  hover:text-sm "
+          }`}
         ></i>
         <div onClick={showProduct} className=" hover:brightness-50 ">
           <Image

@@ -1,109 +1,382 @@
-import React, { useContext, useEffect } from "react";
-import useBasket from ".././hooks/useBasket";
+import React, { useContext, useEffect, useState } from "react";
+import useBasket from "../hooks/useBasket";
 import StoreContext from ".././constance";
 import { createPortal } from "react-dom";
 import BasketPage from ".././store/BasketPage";
 import styles from ".././styles/basketPage.module.css";
 import Image from "next/image";
+
 function ShowBasket() {
   const { items, invoice, actions } = useBasket();
   const { showBasket, setShowBasket } = useContext(StoreContext);
 
-  const calcItem = () => {
-    return items.reduce((acc, curr) => acc + curr.quantity, 0);
-  };
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // null | "loading" | "success" | "error"
+
+  const [address, setAddress] = useState({
+    name: "Wade john smith",
+    line1: "New zealand-2nd cross",
+    line2: "cros road num-22023",
+    country: "United States",
+  });
+  const [draftAddress, setDraftAddress] = useState({ ...address });
+
+  // ── helpers ────────────────────────────────────────────────────────────────
+
+  const calcItem = () => items.reduce((acc, curr) => acc + curr.quantity, 0);
+
+  // ── effects ────────────────────────────────────────────────────────────────
+
   useEffect(() => {
     if (showBasket) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
     }
-  });
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [showBasket]);
+
+  useEffect(() => {
+    if (showBasket) setSubmitStatus(null);
+  }, [showBasket]);
+
+  // ── address handlers ───────────────────────────────────────────────────────
+
+  const handleEditClick = () => {
+    setDraftAddress({ ...address });
+    setIsEditingAddress(true);
+  };
+
+  const handleSaveAddress = () => {
+    setAddress({ ...draftAddress });
+    setIsEditingAddress(false);
+  };
+
+  const handleCancelAddress = () => setIsEditingAddress(false);
+
+  const handleAddressChange = (field, value) =>
+    setDraftAddress((prev) => ({ ...prev, [field]: value }));
+
+  // ── order submit ───────────────────────────────────────────────────────────
+
+  const handleSubmitOrder = async () => {
+    if (calcItem() === 0) return;
+
+    const orderPayload = {
+      address,
+      items,
+      invoice,
+      submittedAt: new Date().toISOString(),
+    };
+
+    setSubmitStatus("loading");
+
+    try {
+      // ✏️ Replace with your real endpoint
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderPayload),
+      });
+
+      if (!res.ok) throw new Error("Order failed");
+
+      console.log("Order submitted:", orderPayload);
+      setSubmitStatus("success");
+      // Optionally clear basket: actions.removeAll(items);
+    } catch (err) {
+      console.error(err);
+      setSubmitStatus("error");
+    }
+  };
+
+  // ── shared input class ─────────────────────────────────────────────────────
+
+  const inputCls =
+    "border border-stone-300 focus:border-lightorange focus:outline-none rounded-md px-2 py-1.5 text-sm w-full bg-transparent transition-colors duration-150";
+
+  // ── render ─────────────────────────────────────────────────────────────────
+
   return (
     <>
       {showBasket &&
         createPortal(
-          <div
-            className={` w-3/5 max-sm:w-full max-sm:p-1 max-sm:h-[450px] max-sm:top-[140px] max-sm:right-0  right-1/4 grid  grid-cols-3 grid-rows-5 h-3/4  text-center z-10 bg-transparent backdrop-blur-3xl  bottom-12  p-3 fixed animate-macbookOpen ease-in-out   rounded-lg `}
-          >
-            <button
-              onClick={() => actions.removeAll(items)}
-              className="bi bi-trash3-fill max-sm:right-[145px]   text-specialRed rounded-full w-6 absolute top-4 right-[265px]"
-            ></button>
-            <button
-              onClick={() => setShowBasket(false)}
-              className="bi bi-x-circle-fill max-sm:text-lg max-sm:right-0 z-10  text-xl text-specialRed absolute max-sm:-top-2  right-5 "
-            ></button>
+          <>
+            {/* ── Backdrop: closes basket on outside click ── */}
             <div
-              className={`border border-stone-400 p-2 rounded-xl overflow-y-auto row-start-1 row-end-4 col-end-3 col-start-1 ${styles.custom} `}
-            >
-              <h2 className="flex mb-4 ml-4 text-lg ">Cart Detail</h2>
-              {calcItem() >= 1 ? (
-                items.map((item) => {
-                  return <BasketPage key={item?.id} basketdata={item} />;
-                })
-              ) : (
-                <div className="flex  items-center justify-center text-stone-500">
-                  <p> Your Basket is Empty </p>
-                  <Image
-                    className="justify-center"
-                    width={160}
-                    height={150}
-                    src="/images/logoimg.webp"
-                    alt="empty basket"
-                  />
-                </div>
-              )}
-            </div>
-            <div className="border   p-4 mt-2 border-stone-400 row-start-4 row-end-6  col-start-1 col-end-3 rounded-lg">
-              <div className="flex justify-between  mb-4">
-                <h2 className=" max-sm:ml-0 max-sm:text-sm   ml-8">
-                  Delivery Information
-                </h2>
-                <button className=" border  border-lightorange justify-center rounded-full text-xs p-1 text-lightorange max-sm:w-14  w-20 justify-self-end">
-                  Edit
-                </button>
-              </div>
-              <div className="flex flex-col gap-1 text-stone-600 text-sm   text-left">
-                <p>Wade john smith</p>
-                <p> New zealand-2nd cross</p>
-                <p>cros road num-22023</p>
-                <p>United state</p>
-              </div>
-            </div>
-            <div className="col-start-3 p-3  row-start-1 row-end-6 rounded-lg ml-2 border border-stone-400">
-              <h3 className="text-lg flex ml-2">Order Summary</h3>
-              <div className="flex-col mt-7 text-left max-sm:text-xs text-sm ">
-                <p className="text-specialRed ">Product added :</p>
-                <p>{calcItem()}</p>
-                <p className="text-specialRed">totalprice : </p>
-                <p>{invoice.totalPrice}</p>
-                <p className="text-specialRed">discount :</p>
-                <p>{invoice.discount} %</p>
-              </div>
-              <div className=" absolute bottom-6 ">
-                <div className="delivery items-center mb-6  flex gap-3  max-sm:gap-0 ">
-                  <i className="bi bi-truck text-md max-sm:mb-8 text-stone-500   "></i>
-                  <div className="max-sm:mr-4">
-                    <p className="text-[12px] ">Delivery limit </p>
-                    <p className="text-[11px] text-stone-500">
-                      Free delivery within 50 km’s.
-                    </p>
-                  </div>
-                </div>
-                <div className="policy flex    items-center gap-3 max-sm:gap-0  ">
-                  <i className="bi bi-shield-slash text-md max-sm:mb-8 text-stone-500    "></i>
-                  <div className="max-sm:mr-4">
-                    <p className="text-[12px] ">Delivery limit </p>
-                    <p className="text-[11px] text-stone-500">
-                      Free delivery within 50 km’s.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>,
+              onClick={() => setShowBasket(false)}
+              aria-hidden="true"
+              className="fixed inset-0 z-10 bg-black/20"
+            />
 
+            {/* ─────────────────────────────────────────────────────────────
+                LAPTOP / DESKTOP / TABLET  →  your original layout (3-col grid)
+                MOBILE (<sm)               →  bottom sheet, single column
+            ───────────────────────────────────────────────────────────── */}
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Shopping basket"
+              onClick={(e) => e.stopPropagation()}
+              className={`
+                z-20 bg-transparent backdrop-blur-3xl
+                animate-macbookOpen ease-in-out rounded-lg
+                text-center fixed
+
+                /* ── your original laptop/desktop/tablet classes ── */
+                w-3/5 right-1/4 bottom-12 h-4/5 p-3
+                grid grid-cols-3 grid-rows-6
+
+                /* ── mobile overrides: bottom sheet, single column ── */
+                max-sm:w-full  max-sm:left-0 max-sm:right-0 max-sm:bottom-0
+                max-sm:top-0   max-sm:h-full
+                max-sm:flex max-sm:flex-col max-sm:overflow-y-auto
+                max-sm:rounded-t-2xl max-sm:rounded-b-none
+                max-sm:p-4 max-sm:gap-3
+              `}
+            >
+              {/* ── action buttons ── */}
+              <button
+                onClick={() => actions.removeAll(items)}
+                aria-label="Clear basket"
+                className="
+                  bi bi-trash3-fill text-specialRed rounded-full w-6
+                  absolute top-4 right-[265px]
+                  max-sm:right-14 max-sm:top-3
+                "
+              />
+              <button
+                onClick={() => setShowBasket(false)}
+                aria-label="Close basket"
+                className="
+                  bi bi-x-circle-fill text-xl text-specialRed
+                  absolute right-5 top-2 z-10
+                  max-sm:right-3 max-sm:top-3
+                "
+              />
+
+              {/* ════════════════════════════════════════
+                  SECTION 1 — Cart Detail
+                  desktop: grid area row1-3 / col1-2
+                  mobile:  natural flow, capped height
+              ════════════════════════════════════════ */}
+              <div
+                className={`
+                  border border-stone-400 p-2 rounded-xl overflow-y-auto
+                  row-start-1 row-end-4 col-start-1 col-end-3
+                  max-sm:row-auto max-sm:col-auto
+                  max-sm:max-h-[220px] max-sm:mt-6
+                  ${styles.custom}
+                `}
+              >
+                <h2 className="flex mb-4 ml-4 text-lg">Cart Detail</h2>
+
+                {calcItem() >= 1 ? (
+                  items.map((item) => (
+                    <BasketPage key={item?.id} basketdata={item} />
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-stone-500 gap-2 py-4">
+                    <p>Your Basket is Empty</p>
+                    <Image
+                      width={120}
+                      height={110}
+                      src="/images/logoimg.webp"
+                      alt="empty basket"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* ════════════════════════════════════════
+                  SECTION 2 — Delivery Information
+              ════════════════════════════════════════ */}
+              <div
+                className="
+                  border p-2 mt-2 border-stone-400 rounded-lg
+                  row-start-4 row-end-7 col-start-1 col-end-3
+                  max-sm:row-auto max-sm:col-auto max-sm:mt-0
+                "
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <h2 className="text-sm font-medium max-sm:text-base">
+                    Delivery Information
+                  </h2>
+                  {!isEditingAddress && (
+                    <button
+                      onClick={handleEditClick}
+                      className="
+                        border border-lightorange rounded-full
+                        text-xs px-3 py-1 text-lightorange
+                        hover:bg-lightorange hover:text-white
+                        transition-colors duration-150
+                      "
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>
+
+                {/* edit form */}
+                {isEditingAddress ? (
+                  <div className="flex flex-col gap-2">
+                    <input
+                      value={draftAddress.name}
+                      onChange={(e) =>
+                        handleAddressChange("name", e.target.value)
+                      }
+                      placeholder="Full name"
+                      className={inputCls}
+                    />
+                    <input
+                      value={draftAddress.line1}
+                      onChange={(e) =>
+                        handleAddressChange("line1", e.target.value)
+                      }
+                      placeholder="Address line 1"
+                      className={inputCls}
+                    />
+                    <input
+                      value={draftAddress.line2}
+                      onChange={(e) =>
+                        handleAddressChange("line2", e.target.value)
+                      }
+                      placeholder="Address line 2"
+                      className={inputCls}
+                    />
+                    <input
+                      value={draftAddress.country}
+                      onChange={(e) =>
+                        handleAddressChange("country", e.target.value)
+                      }
+                      placeholder="Country"
+                      className={inputCls}
+                    />
+                    <div className="flex gap-2 mt-1">
+                      <button
+                        onClick={handleSaveAddress}
+                        className="bg-lightorange text-white rounded-full px-4 py-1.5 text-xs hover:opacity-90 active:scale-95 transition-all"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={handleCancelAddress}
+                        className="border border-stone-300 text-stone-500 rounded-full px-4 py-1.5 text-xs hover:bg-stone-100 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* display */
+                  <div className="flex flex-col gap-0.5 text-stone-600 text-sm text-left">
+                    <p>{address.name}</p>
+                    <p>{address.line1}</p>
+                    <p>{address.line2}</p>
+                    <p>{address.country}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* ════════════════════════════════════════
+                  SECTION 3 — Order Summary + Place Order
+              ════════════════════════════════════════ */}
+              <div
+                className="
+                  border border-stone-400 rounded-lg p-3 ml-2
+                  col-start-3 row-start-1 row-end-7
+                  flex flex-col
+                  max-sm:row-auto max-sm:col-auto max-sm:ml-0
+                "
+              >
+                <h3 className="text-lg ml-2 mb-4 text-left">Order Summary</h3>
+
+                {/* summary rows */}
+                <div className="flex flex-col gap-1 text-left text-sm max-sm:text-xs">
+                  <p className="text-specialRed font-medium">Items:</p>
+                  <p className="mb-2">{calcItem()}</p>
+                  <p className="text-specialRed font-medium">Total price:</p>
+                  <p className="mb-2">{invoice.totalPrice}</p>
+                  <p className="text-specialRed font-medium">Discount:</p>
+                  <p className="mb-2">{invoice.discount} %</p>
+                </div>
+
+                <div className="border-t border-stone-300 my-3" />
+
+                {/* delivery & policy */}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-start gap-3">
+                    <i
+                      className="bi bi-truck text-stone-500 mt-0.5 flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                    <div>
+                      <p className="text-[12px] font-medium">Delivery</p>
+                      <p className="text-[11px] text-stone-500">
+                        Free within 50 km's.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <i
+                      className="bi bi-shield-check text-stone-500 mt-0.5 flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                    <div>
+                      <p className="text-[12px] font-medium">Returns</p>
+                      <p className="text-[11px] text-stone-500">
+                        Free within 30 days.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* pushes button to bottom on desktop */}
+                <div className="flex-1" />
+
+                {/* ── Place Order button ── */}
+                <div className="flex flex-col gap-1 mt-4">
+                  <button
+                    //onClick={handleSubmitOrder}
+                    disabled={
+                      calcItem() === 0 ||
+                      submitStatus === "loading" ||
+                      submitStatus === "success"
+                    }
+                    className={`
+                      w-full py-2.5 rounded-full text-sm font-medium
+                      transition-all duration-200 active:scale-95
+                      ${
+                        submitStatus === "success"
+                          ? "bg-green-500 text-white cursor-default"
+                          : submitStatus === "error"
+                          ? "bg-red-500 text-white hover:opacity-90"
+                          : calcItem() === 0
+                          ? "bg-stone-200 text-stone-400 cursor-not-allowed"
+                          : "bg-lightorange text-white hover:opacity-90"
+                      }
+                    `}
+                  >
+                    {submitStatus === "loading" && "Placing order…"}
+                    {submitStatus === "success" && "✓ Order placed!"}
+                    {submitStatus === "error" && "Try again"}
+                    {!submitStatus && "Place Order"}
+                  </button>
+
+                  {submitStatus === "error" && (
+                    <p className="text-[11px] text-red-500 text-center">
+                      Something went wrong. Please try again.
+                    </p>
+                  )}
+                  {submitStatus === "success" && (
+                    <p className="text-[11px] text-green-600 text-center">
+                      Confirmation email on its way!
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </>,
           document.body
         )}
     </>
