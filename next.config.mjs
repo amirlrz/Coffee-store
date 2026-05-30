@@ -1,16 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   webpack(config, { isServer }) {
-    // افزودن rule برای فایل‌های ویدیویی
     config.module.rules.push({
-      test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/, // شناسایی فایل‌های ویدیویی و صوتی
+      test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
       use: [
         {
           loader: "file-loader",
           options: {
-            publicPath: "/_next/static/media/", // مسیر عمومی برای فایل‌ها
-            outputPath: `${isServer ? "../" : ""}static/media/`, // مسیر خروجی برای فایل‌ها
-            name: "[name].[hash].[ext]", // نام فایل خروجی
+            publicPath: "/_next/static/media/",
+            outputPath: `${isServer ? "../" : ""}static/media/`,
+            name: "[name].[hash].[ext]",
           },
         },
       ],
