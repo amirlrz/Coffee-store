@@ -4,13 +4,13 @@ import React, { useContext, useEffect } from "react";
 import StoreContext from "../../constance";
 import { createPortal } from "react-dom";
 import useBasket from "../../hooks/useBasket";
-import ShowBasket from "../../store/ShowBasket";
+import ShowBasket from "../../store/BasketModal";
 import { supabase } from "../../api/config";
 import dynamic from "next/dynamic";
 
 const Menu = dynamic(() => import("../Menu"), { ssr: false });
 const UserPage = dynamic(() => import("../../AcountPage/page"), { ssr: false });
-const LoginPage = dynamic(() => import("../../LoginPage/login/page"), {
+const AuthModal = dynamic(() => import("../../AuthModal/page"), {
   ssr: false,
 });
 
@@ -89,7 +89,7 @@ function CardPage() {
       {showLgPop &&
         (isLogIn
           ? createPortal(<UserPage />, document.body)
-          : createPortal(<LoginPage />, document.body))}
+          : createPortal(<AuthModal />, document.body))}
 
       <ShowBasket />
     </>

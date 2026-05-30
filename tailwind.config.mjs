@@ -27,7 +27,14 @@ export default {
           "50%": { transform: "scale(1.1) rotateX(0deg)", opacity: "1" },
           "100%": { transform: "scale(1) rotateX(0deg)", opacity: "1" },
         },
-
+        slideDown: {
+          "0%": { transform: "translateY(-100%)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        fadeIn: {
+          "0%": { opacity: "0", transform: "translateY(6px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
         slideInRight: {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0)" },
@@ -40,6 +47,8 @@ export default {
       animation: {
         macbookOpen: "macbookOpen 0.9s ease forwards",
         productOpen: "macbookOpen 0.6s ease forwards",
+        slideDown: "slideDown 0.35s ease-out forwards",
+        fadeIn: "fadeIn 0.25s ease-out forwards",
         "slide-in-right": "slideInRight 0.4s ease-in-out",
         "slide-out-right": "slideOutRight 0.3s ease-in-out",
       },

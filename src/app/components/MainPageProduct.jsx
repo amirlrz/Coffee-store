@@ -7,7 +7,7 @@ import ProductCardSkeleton from "../components/ProductCardSkeleton";
 import { supabase } from "../api/config";
 
 const CATEGORY_COL = "category";
-const PRICE_COL = "price";
+// const PRICE_COL = "price";
 const NAME_COL = "name";
 
 function MainPageProduct({ LandPgData = [] }) {

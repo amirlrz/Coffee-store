@@ -1,20 +1,16 @@
-import React, { useContext } from "react";
-import ProductCard from "./ProductCard";
+import React from "react";
 import getProducts from "../api/getProducts";
 import ShowProductDt from "./ShowProductDt";
+import StorePageClient from "./StorePageClient";
 
 async function StorePage() {
+  // fetch on the server for instant first paint, pass as initialData
   const productsData = await getProducts();
 
   return (
     <>
-      <div className="max-sm:flex-col max-sm:items-center max-sm:flex grid grid-rows-1  grid-cols-4 ">
-        {productsData &&
-          productsData.map((data) => (
-            <ProductCard alldata={data} key={data.id} />
-          ))}
-        <ShowProductDt />
-      </div>
+      <StorePageClient initialData={productsData ?? []} />
+      <ShowProductDt />
     </>
   );
 }
